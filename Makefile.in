@@ -446,6 +446,8 @@ unicode_compose.c: unitable
 
 in_code_table.h: in_code_table.c
 		grep "@ISOBYTEDEFINDEX@" in_code_table.c > in_code_table.h
+		$(SED)	's/in_code_table.c//' in_code_table.h > in_code_table_temp.h
+		$(MV) -f in_code_table_temp.h in_code_table.h
 
 in_table_defs.h: dyn_table unitable
 
