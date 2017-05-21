@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-
-#DEBHELPER#
-
-# nothing should be done.

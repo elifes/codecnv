@@ -1,5 +1,0 @@
-#!/bin/sh -
-# written by S.Kaneko. Public domain.
-
-find `perl -e 'use Config; print $Config{archlib};'` -follow -name perl.h -print |\
-  head -1 | sed 's/\/perl.h//'
