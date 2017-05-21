@@ -1,0 +1,1 @@
+EXEEXT_POSTFIX = -DSYSTEM_EXEEXT="@ac_exeext@"

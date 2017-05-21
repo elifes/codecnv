@@ -1,0 +1,477 @@
+/* *******************************************************************
+** Copyright (c) 1996-2015 Seiji Kaneko. All rights reserved.
+** Everyone is permitted to use this program in source and binary
+** form, with or without modification if and only if the following
+** conditions are met:
+** 1. Redistributions of source code must retain the above copyright
+**   notice, copyright notice written in source code, additional list
+**   of conditions and the following disclaimer.
+** 2. Redistributions in machine readable form must reproduce the 
+**   above copyright notice and the following disclaimer in the
+**   documentation or other material provided with the distribution.
+**********************************************************************
+** Disclaimer: This software is provided and distributed AS iS, 
+**	without any implicit or explicit warranties, and not
+**	guaranteed to be error-free. In no event shall the author be
+**	liable for any direct, indirect or incidental damages,
+**	including, but not limited to, loss of data, use or profits
+**	responsibility for any direct or indirect damages or results
+**	arising by using whole or a part of this software.
+**********************************************************************
+
+    config.h:		configuration
+    $Id: config.h.in,v 1.33 2017/01/05 15:05:48 seiji Exp seiji $
+*/
+
+#if !defined(INCLUDE_SKFDEFS)
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define to 1 if using `alloca.c'. */
+#undef C_ALLOCA
+
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
+#undef ENABLE_NLS
+
+/* Define to 1 if you have the `calloc' function. */
+#undef HAVE_CALLOC
+
+/* Define to 1 if you have the `dcgettext' function. */
+#undef HAVE_DCGETTEXT
+
+/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
+#undef HAVE_DOPRNT
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `getegid' function. */
+#undef HAVE_GETEGID
+
+/* Define to 1 if you have the `geteuid' function. */
+#undef HAVE_GETEUID
+
+/* Define to 1 if you have the `getgid' function. */
+#undef HAVE_GETGID
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
+/* Define to 1 if you have the `getuid' function. */
+#undef HAVE_GETUID
+
+/* Define if you have the iconv() function. */
+#undef HAVE_ICONV
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
+#undef HAVE_LANGINFO_CODESET
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#undef HAVE_LC_MESSAGES
+
+/* Define to 1 if you have the `intl' library (-lintl). */
+#undef HAVE_LIBINTL
+
+/* Define to 1 if you have the <libintl.h> header file. */
+#undef HAVE_LIBINTL_H
+
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define to 1 if you have the <locale.h> header file. */
+#undef HAVE_LOCALE_H
+
+/* Define to 1 if you have the <langinfo.h> header file. */
+#undef HAVE_LANGINFO_H
+
+/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
+   to 0 otherwise. */
+#undef HAVE_MALLOC
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
+/* Define to 1 if you have the `alloca' function. */
+#undef HAVE_ALLOCA
+
+/* Define to 1 if you have the `memmove' function. */
+#undef HAVE_MEMMOVE
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <nl_types.h> header file. */
+#undef HAVE_NL_TYPES_H
+
+/* Define to 1 if you have the `setvbuf' function. */
+#undef HAVE_SETVBUF
+
+/* Define to 1 if you have the `setbuffer' function. */
+#undef HAVE_SETBUFFER
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#undef HAVE_STDDEF_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strchr' function. */
+#undef HAVE_STRCHR
+
+/* Define to 1 if you have the `strnlen' function. */
+#undef HAVE_STRNLEN
+
+/* Define to 1 if you have the mkstemp function (should have). */
+#undef HAVE_MKSTEMP
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strtoul' function. */
+#undef HAVE_STRTOUL
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `vprintf' function. */
+#undef HAVE_VPRINTF
+
+/* Define to 1 if you have the `__argz_count' function. */
+#undef HAVE___ARGZ_COUNT
+
+/* Define to 1 if you have the `__argz_next' function. */
+#undef HAVE___ARGZ_NEXT
+
+/* Define to 1 if you have the `__argz_stringify' function. */
+#undef HAVE___ARGZ_STRINGIFY
+
+/* Define as const if the declaration of iconv() needs const. */
+#undef ICONV_CONST
+
+/* Define to 1 if bcopy exist */
+#undef HAVE_BCOPY
+
+/* Define to 1 if the C compiler supports function prototypes. */
+#undef PROTOTYPES
+
+/* Define to 1 if the `setvbuf' function takes the buffering type as its
+   second argument and the buffer pointer as the third, as on System V before
+   release 3. */
+#undef SETVBUF_REVERSED
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
+
+/* Define like PROTOTYPES; this can be used by system headers. */
+#undef __PROTOTYPES
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define if we are compiling under MINGW */
+#undef SKF_MINGW
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif
+
+/* Define to rpl_malloc if the replacement function should be used. */
+#undef malloc
+
+/* Define to `long' if <sys/types.h> does not define. */
+#undef off_t
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t
+
+/* int types are strictly checked from 1.99	*/
+/* skf only uses these three integer types.	*/
+#if HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
+#if defined(INT32_MAX) || defined(int32_t)
+#define skfint32_t	int32_t
+#else
+#define skfint32_t	long	/* safer bet */
+#endif
+
+#if defined(UINT16_MAX) || defined(uint16_t)
+#define skfuint16_t	uint16_t
+#else
+#define skfuint16_t	unsigned short
+#endif
+
+#if defined(UINT32_MAX) || defined(uint32_t)
+#define skfuint32_t	uint32_t
+#else
+#define skfuint32_t	unsigned long
+#endif
+
+/* mingw definition treatment */
+#ifdef SKF_MINGW
+#ifndef __MINGW32__
+#define __MINGW32__ 1
+#endif
+#endif
+
+/* Plugins don't support dynamic loading			*/
+#ifdef	SWIG_EXT
+#undef	DYNAMIC_LOADING
+#endif
+
+/* dynamic loading related definitions				  */
+#ifdef		DYNAMIC_LOADING
+
+/* where tables are to go.					  */
+#ifndef TABLEDIR
+#define		TABLEDIR	"/usr/share/lib/skf"
+#endif
+
+#else		/* !DYNAMIC_LOADING	*/
+/* if DYNAMIC LOADING is disabled, include various tables	  */
+#define		INCLUDE_ADDED_LATIN_TABLE /* various latins	  */
+#define		INCLUDE_EURO_TABLE
+#define		INCLUDE_PHONE_TABLE	/* phone glyphs		  */
+#endif		/* DYNAMIC LOADING */
+
+#define		POSIX_NONBLOCK
+/*#define	BSD_NDELAY					  */
+/*#define	SYSV_NDELAY					  */
+
+#if	defined(_WIN32) || defined(__MINGW32__) || !HAVE_GETEUID
+			/* VC++ and cygwin with -mno-cygwin	  */
+#if	defined(__MINGW32__)
+#include	<windows.h>
+#include	<errno.h>
+#endif
+#define		NO_GETEUID	/* doesn't have any		  */
+#endif
+
+#if !defined(HAVE_CALLOC)
+#if !defined(HAVE_MALLOC)
+#define skf_calloc(nmemb,size)	malloc((nmemb * size))
+#else
+#define skf_calloc(nmemb,size)	rpl_malloc((nmemb * size))
+#endif
+#else
+#define skfcalloc calloc
+#endif
+
+#if	defined(_WIN32) || defined(__MINGW32__) || defined(__INTERIX)
+#ifdef		ENABLE_NLS
+#undef		ENABLE_NLS
+#endif
+#endif
+
+/* -------------------------------------------------------------- */
+/* skf large model						  */
+/* -------------------------------------------------------------- */
+#define		SKF_LARGE	TRUE
+#define		SKF_LARGE	TRUE
+
+#ifdef SKF_LARGE
+#ifndef SKF_MEDIUM
+#define SKF_MEDIUM
+#endif
+#endif
+
+/* -------------------------------------------------------------- */
+#if		defined(HAVE_LOCALE_H) && !defined(HAVE_LANGINFO_H)
+#undef		HAVE_LOCALE_H
+#endif
+
+#ifdef		ENABLE_NLS
+#ifndef		PACKAGE
+#define		PACKAGE		"skf"
+#endif
+#ifndef		LOCALEDIR
+#define		LOCALEDIR	"/usr/share/locale"
+#endif
+#endif
+
+#if	defined(SKF_RUBY19) || defined(SKF_RUBY20) || defined(SKF_RUBY21)
+#ifndef	SKF_RUBY2
+#define		SKF_RUBY2
+#endif
+#endif
+
+#else		/* after skfdefs				  */
+
+/* -------------------------------------------------------------- */
+/* parameter setUp						  */
+/* -------------------------------------------------------------- */
+/* default codeset: refer skf.h					  */
+/* -------------------------------------------------------------- */
+
+#ifndef         DEFAULT_I	/* default input code		  */
+#define         DEFAULT_I       codeset_euc     /* EUC		  */
+/* #define      DEFAULT_I       codeset_utf16le :* Unic*de(UCS2)  */
+/* #define      DEFAULT_I       codeset_utf8    :* Unic*de(UTF8)  */
+/* #define      DEFAULT_I       codeset_utf7    :* Unic*de(UTF7)  */
+/* #define      DEFAULT_I       codeset_sjis    :* Micr*soft code */
+/* #define      DEFAULT_I       codeset_jis     :* JIS		  */
+/* #define      DEFAULT_I       codeset_keis    :* KEIS83	  */
+#endif
+
+#ifndef         DEFAULT_KI	/* default suffix to call kanji   */
+#define         DEFAULT_KI      'B'	/* JIS X-0208(1983/90)	  */
+#endif
+
+#ifndef         DEFAULT_KO	/* default suffix to call single  */
+#define         DEFAULT_KO      'B'	/* is ascii		  */
+#endif
+
+#ifndef         DEFAULT_O	/* default output code		  */
+/* #define	DEFAULT_O       codeset_sjis    :* Micr*soft code */
+#define		DEFAULT_O       codeset_euc     /* EUC		  */
+/* #define      DEFAULT_O       codeset_jis     :* JIS		  */
+/* #define      DEFAULT_O       codeset_utf16le :* Unic*de(UCS2)  */
+/* #define      DEFAULT_O       codeset_utf8    :* Unic*de(UTF8)  */
+/* #define      DEFAULT_O       codeset_utf7    :* Unic*de(UTF7)  */
+/* #define      DEFAULT_O       codeset_keis    :* KEIS83	  */
+#endif
+
+/*
+  default G1, G2 and G3 setting is intensionally hard-coded. If
+  you really want to change default behaviour, see last part of 
+  in_code_table.c.
+*/
+#define		ASSUMED_ASCII_CODE	codeset_8859_1
+
+/* -------------------------------------------------------------- */
+/* default language for code detection				  */
+/* -------------------------------------------------------------- */
+#define DEFAULT_LANG	L_JA
+
+/* -------------------------------------------------------------- */
+/* parameter setUp 2						  */
+/* -------------------------------------------------------------- */
+
+/*
+# Pentium II, III, Athlon Optimization:
+#	Define this if you have fast multiply instruction. It is 
+#	purely performance setting, and either will work.
+#	Disable:	M68k, ARMs and old MIPSs
+#	Maybe:		Pentium4, Pentium, Sparc, Alpha
+#	Enable:		P6's, Athlon, Cyrix MII, MIPS and PowerPCs.
+*/
+#define FAST_MULT
+
+#ifndef MAXPATHLEN	/* should be in sys/param.h */
+#define	MAXPATHLEN	2048	/* be longer than POSIX_PATH_MAX  */
+#endif
+
+#define SUFFIX_LIMIT	16
+#define IN_FILE_NAME	(MAXPATHLEN + 10) /* +10 + 16(suffix)	  */
+			/* maximum input file name length	  */
+#define OUT_FILE_NAME	(IN_FILE_NAME + SUFFIX_LIMIT)
+
+#define		I_BUFSIZ	16384	/* input file buffer	  */
+#define		O_BUFSIZ	16384	/* output file buffer	  */
+
+#define		DEFAULT_HOLD_SIZE	4096 /* detect buf size	  */
+
+#define		OPTSTR_LIMIT	1024	/* option string max len  */
+
+/* actual table directory path size = SKF_TABLE_PATH-12		  */
+#define		SKF_TABLE_PATH	128	/* table path size	  */
+
+#if defined(SKF_MINGW) || defined(_WIN32) || defined(__MINGW32__)
+#ifndef	NEED_BINMODE
+#define		NEED_BINMODE	1
+#endif
+#endif
+
+/* --- miscellaneous controls ----------------------------------- */
+/* #define	SUPPRESS_FJ_CONVENSION	:* iso-2022-jp support off */
+/* #define	SUPPRESS_UNRECOGNIZED_SEQ :* suppress unknown code */
+/* -------------------------------------------------------------- */
+#define	UCS2_KANA_SUPPR		/* ucs2 kana compaction		  */
+/* #define	UCS2_NORMALIZE	:* ucs2 support level 2 compaction*/
+#define ACE_SUPPORT		/* USE ACE (punycode)		  */
+/* #define	KEIS_DETECT	:* enables input keis test(danger!)*/
+/* #define	UTF_MIME_RECOVERY :* 				  */
+/* #define	UNIFY_ASCII_JIS :* ascii-jis x0201 unification	  */
+#define	NKF_NAMETEST		/* act as nkf if called as nkf	  */
+	/* Note: Following option may have severe effect to code  */
+	/*       detection.					  */
+/* #define	ALLOW_TYPOGRAPHY :* stream may contain ascii art. */
+#define		GEN_SCRIPT_SUPRT /* UCS2 generic latin support    */
+#define		GEN_SCRIPT_ULM	/* general script area upper limit*/
+
+#define		TAB_WIDTH	8  /* default tab width		  */
+
+#ifdef		FOLD_SUPPORT
+#define		DEFAULT_FOLD	66 /* line fold limit		  */
+#define		DEFAULT_FOLD_WRAP 5
+#define		NKF_FOLD	60 /* line fold limit		  */
+#define		NKF_FOLD_WRAP 10
+#define		DEFAULT_OIDASH_MGN 1 /* default oidashi margin	  */
+#endif
+
+/* revision specific feature support flags */
+/* #define USE_UP_CONVERTER 1 */
+#define NEW_ROT_CODE	1
+#define SKF2ORLATER	1	/* I declare arrival of skf-2.x!  */
+#define SKF20ORLATER	1	/* I declare arrival of skf-2.x!  */
+#define NEW_SOFTWRAP_CODE 1 /* */
+#define SKF196COMPAT	1
+#define DELETESPACEONLE 1 /* */
+/* #define OFFSET_CALC_ENBL 1 */
+#undef  FUTURESUPPORT	
+
+#ifdef	SKF20ORLATER
+#define NOSPACECONVERT  1
+/* #define USE_TRUE_MIME_TAIL 1 :* */
+#endif
+
+#ifdef ENABLE_DISABLED
+#undef ENABLE_DISABLED
+#endif
+
+/* Note: DO NOT enable this. For this option breaks skf-plugin
+	idempotency and future thread-safe feature.
+*/
+/* #define FORCE_ENABLE_ARIB_MACRO_DEF 1 */
+#define ARIB_FULL_MACRO_DEF	1
+
+/* several nkf-bug/feature limitation.				  */
+/*  skf uses plathome native le, nkf uses lf			  */
+#ifdef SKF_EXPERIMENTAL
+#define NKF_NOOPTIMIZE_LE 1
+#define NKF_NOCANONICAL_LE 1
+#endif
+
+#define SHIFTJIS_CP932	1	/* nkf does not distinguish them  */
+#define MIME_DECODE_DEFAULT 1
+#define X0201_DEFAULT 1
+#define HELP_OUTPUT_HELP_OUTPUT 1
+#define ARIB_SUPPORT 1
+#define NO_ARIB_EXCLUDE_GLYPHS 1 /* normally undefined		  */
+
+#endif
