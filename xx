@@ -1,0 +1,21 @@
+#if defined(_WIN32) || defined(__MINGW32__)
+	for (i = 0;i<SKF_TABLE_PATH && (name_me[i] != 0)
+			&& (i < j);i++) {
+	    if ((i >= 3+k) && (name_me[i-(3+k)] == 'n') 
+		&& (name_me[i-k-2] == 'k') && (name_me[i-k-1] == 'f')
+		&& (name_me[i-k] == '.') && (name_me[i+1] == 0)) {
+		set_nkf_compat; is_name_nkf = TRUE;
+		break;
+	    };
+	};
+#else
+	for (i = 0;i<SKF_TABLE_PATH && (name_me[i] != 0)
+			&& (i < j);i++) {
+	    if ((i >= 2) && (name_me[i-2] == 'n') 
+		&& (name_me[i-1] == 'k') && (name_me[i] == 'f')
+		&& (name_me[i+1] == 0)) {
+		set_nkf_compat; is_name_nkf = TRUE;
+		break;
+	    };
+	};
+#endif

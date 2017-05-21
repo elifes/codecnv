@@ -1,0 +1,1379 @@
+.TH SKF 1 1/JUN/2013
+.SH NAME
+.\" $Id: skf.1,v 1.112 2017/01/20 15:16:21 seiji Exp seiji $
+skf \- simple Kanji Filter (v2.1)
+.SH SYNOPSIS
+.B skf
+[\-EIJKNQRSXZbehjknqrsuvxz]
+[
+.I "long_format_options"
+] [infiles..]
+.SH DESCRIPTION
+.B skf
+is a yet another i18n capable kanji\-filter,
+designed for reading various CJK-coded files on the Net.
+.B skf
+converts input kanji texts or streams into a
+character stream using designated codeset
+and output them to standard output. Specifically,
+.B skf
+is designed to be a versatile filter to read documents in various code
+sets, and does not provide features not related to code conversion.
+.PP
+Like nkf,
+.B skf
+automatically recognizes an input file code when it is a kind of
+ISO-2022 compliant code, and also detects EUC-variant codes
+if input file is Japanese text without X 0201 kanas.
+.B skf 1.9x
+can read various iso-2022 compliant character sets, including JIS Kanji
+codes (X 0208, X 0212 and X 0213), EUC encoding (euc-jp (with X 0213
+support), euc-cn, euc-kr and euc-tw), ISO Europian latins
+(ISO-8859-1 to 11, 13/14/15/16) and many regional character sets.
+.B skf
+can also read some non-iso2022 compliant sets, including Microsoft
+Shift-JIS code, KOI-8-R/U, GB2312 (HZ), big5, VISCII(rfc1456,
+include VIQR), Unicode standard (UCS2/UTF-16, UTF7 and UTF8), 
+some of MS codesets (cp1250 etc.) and some other vendor specific codes 
+(KEIS83, JEF etc).
+.PP
+Supported output character sets of
+.B skf
+are more limited, but still include
+X 0208/X 0212/X 0213 JIS, X 0201 JIS, ASCII, Microsoft 
+Shift-JIS, EUC-jp/-kr/-cn, HZ, iso-2022-jp/kr, big5, VISCII and
+Unicode.
+.PP
+.B skf
+also provides some basic decoding features
+for some common encodings including MIME, Punycode and URI codepoint.
+Unicode decomposition feature is also supported since 1.96.
+.\" B-Right/V plain text in/out is also supported.
+.PP
+As noted above, 
+.B skf
+is designed to convert input text into some kind of human-readable
+forms under a local environment (i.e. codeset), and has several
+extra conversion features like GNU recode type folding.
+Such conversions include Windows/Macintosh specific code swaps and
+old-new jis glyph changes,
+html-format/TeX format conversion and variant unifications.
+.PP
+skf also can be compiled as an extension of some lightweight languages.
+See README.txt for details.
+.PP
+If one or more file names are given,
+.B skf
+read the files and output converted stream to stdout. 
+If no file names are given, input is taken
+from stdin and output is also stdout.
+OPTIONS are taken from environment variables SKFENV,
+skfenv and command line, respectively in this order. Environment
+variables are not used when 
+.B skf 
+is running as a priviledged user.
+.B skf
+does not use LOCALE-related environment variables for conversions, but
+output error messages are controlled by given LOCALES.
+.SH CODESET OPTIONS
+.B skf-1.9
+is written from scratch, and inherits no code from nkf. However,
+.B skf
+is intended to be a drop-in replacement for nkf(v1.4)\, and
+has a similar commonly-used nkf option set.
+.br
+.B skf
+1.96 recognizes following options. Defaults are all off if not
+explicitly specified.
+.SS buffering control
+.TP
+.B \-b
+use buffered output. This is default.
+.TP
+.B \-u
+use unbuffered output.
+Code detection feature is disabled when this option is on.
+.SS Input/Output codeset options
+.TP
+.B \-\-ic=
+.I input_code_set
+.br
+specify input codeset is
+.I input_code_set.
+Possible candidates are shown below.
+.TP
+.B \-\-oc=
+.I output_code_set
+.br
+specify output codeset is
+.I output_code_set.
+Possible candidates are shown below. Default codeset in distribution package
+is euc-jp, but depends on compile option. Default codeset is shown by
+'skf -h'. 
+.SS "  Supported codeset"
+.B skf
+recognizes following codesets as an input/output codeset. These codeset names 
+are case insensitive, and minus ('-') and underscore ('_') is ignored.
+Note that iso-2022 escape-based input codeset 
+(registered to IANA) is recoginized automatically, even when non-iso2022
+codeset (except Unicode and B-Right/V) is specified.
+o in in-column means named codeset can be specified as input and 
+x means named codeset is not for input. output-column is same except 
+it is for output.
+.PP
+in out  name            description
+.br
+o  o    iso8859-1       ascii + iso-8859-1 (latin-1)
+.br
+o  o    iso8859-2       ascii + iso-8859-2 (latin-2)
+.br
+o  o    iso8859-3       ascii + iso-8859-3 (latin-3)
+.br
+o  o    iso8859-4       ascii + iso-8859-4 (latin-4)
+.br
+o  o    iso8859-5       ascii + iso-8859-5 (Cyrillic)
+.br
+o  o    iso8859-6       ascii + iso-8859-6 (Arabic)
+.br
+o  o    iso8859-7       ascii + iso-8859-7 (Greek)
+.br
+o  o    iso8859-8       ascii + iso-8859-8 (Hebrew)
+.br
+o  o    iso8859-9       ascii + iso-8859-9 (latin-5)
+.br
+o  o    iso8859-10      ascii + iso-8859-10 (latin-6)
+.br
+o  o    iso8859-11      ascii + iso-8859-11 (Thai)
+.br
+o  o    iso8859-13      ascii + iso-8859-13 (Baltic Rim)
+.br
+o  o    iso8859-14      ascii + iso-8859-14 (Celtic)
+.br
+o  o    iso8859-15      ascii + iso-8859-15 (Latin-9)
+.br
+o  o    iso8859-16      ascii + iso-8859-16
+.br
+o  o    koi-8r          koi-8r (Russian)
+.br
+o  o    cp1251          Cyrillic latin MS cp1251
+.br
+o  o    jis             iso-2022-jp (rfc1496 7bit JIS)
+.br
+o  o    iso-2022-jp-x0213 iso-2022-jp-3 (JIS X 0213:2000)
+.br
+                        a.k.a. jis-x0213
+.br
+o  o    jis-x0213-strict iso-2022-jp-3-strict
+.br
+o  o    iso-2022-jp-2004 iso-2022-jp-2004(JIS X 0213:2004)
+.br
+                        a.k.a. jis-x0213-2004
+.br
+o  o    oldjis          iso-2022-jp-1978(JIS X 0208:1978)
+.br
+o  o    cp50220         Microsoft codepage 50220
+.br
+o  o    cp50221         Microsoft codepage 50221
+.br
+o  o    cp50222         Microsoft codepage 50222
+.br
+o  o    euc-jp          EUC-encoded JIS X 0208:1997
+.br
+o  o    euc-x0213       EUC-encoded JIS X 0213:2000
+.br
+o  o    euc-jis-2004    EUC-encoded JIS X 0213:2004
+.br
+o  o    cp51932         EUC-encoded Microsoft codepage 932
+.br
+o  o    euc-kr          EUC-encoded KS X 1001 Korian
+.br
+o  o    euc7-kr         7bit EUC-encoded KS X 1001 Korian
+.br
+o  o    uhc             Unified hangle (Windows cp949)
+.br
+o  o    johab           KS X 1001-johab Korian
+.br
+o  o    euc-cn          EUC-encoded GB2312 Chinese
+.br
+o  o    euc7-cn         7bit EUC-encoded GB2312 Chinese
+.br
+o  o    hz              HZ-encoded GB2312 Chinese
+.\".br
+.\"o  o    zw              zW-encoded GB2312 Chinese
+.br
+o  o    euc-tw          EUC-encoded CNS 11643 Chinese
+.br
+o  o    gb12345         EUC-encoded GB12345 Chinese
+.br
+o  o    gbk             GB2312 Extension(cp936) Chinese
+.br
+o  o    gb18030         GB18030 chinese
+.br
+o  o    big5            BIG5 (with Eten extension + EURO)
+.\".br
+.\"o  o    big5-hku        BIG5 (HKU variants)
+.br
+o  o    cp950           BIG5 (Microsoft cp950 + EURO)
+.br
+o  o    big5-hkscs      BIG5 with HKSCS
+.br
+o  o    big5-2003       BIG5-2003
+.br
+o  o    big5-uao        BIG5-Unicode at On
+.br
+o  o    sjis            Shift-jis (Microsoft cp943)
+.br
+o  o    shiftjis-x0213  Shiftjis-encoded JIS X 0213:2000
+.br
+o  o    shiftjis-2004   Shiftjis-encoded JIS X 0213:2004
+.br
+o  o    sjis-docomo	Shiftjis-encoded with NTT Docomo emoticons.
+.br
+o  o    sjis-au		Shiftjis-encoded with AU emoticons.
+.br
+o  o    sjis-softbank	Shiftjis-encoded with SoftBank emoticons.
+.br
+o  o    oldsjis         Shift-jis (JIS X 0208:1978)
+.br
+o  o    cp932           Shift-jis-encoded MS cp932
+.br
+o  o    cp932w          Shift-jis-encoded MS cp932 with
+                        MS compatibility
+.\".br
+.\"o  o    cp943           Shift-jis-encoded IBM cp943
+.br
+o  o    viscii          VISCII (rfc1456) Vietnamise
+.br
+o  o    viqr            VISCII (rfc1456-VIQR) Vietnamise
+.\".br
+.\"o  o    vni             VNI (by VNI software) Vietnamise
+.\".br
+.\"o  o    viscii-mnem     VISCII (VISCII-MNEM) Vietnamise
+.br
+o  o    keis            Hitachi KEIS83/90
+.br
+o  x    jef             Fujitsu JEF (basic support only)
+.br
+o  x    ibm930          IBM EBCDIC DBCS Japanese
+.br
+o  x    ibm931          IBM EBCDIC DBCS Japanese w.latin
+.br
+o  x    ibm933          IBM EBCDIC DBCS Korian
+.br
+o  x    ibm935          IBM EBCDIC DBCS Simpl. Chinese
+.br
+o  x    ibm937          IBM EBCDIC DBCS Trad. Chinese
+.br
+o  o    unicode         Unicode(TM) UTF-16LE
+.br
+o  o    unicodefffe     Unicode(TM) UTF-16BE
+.br
+o  o    utf7            Unicode(TM) UTF-7
+.br
+o  o    utf8            Unicode(TM) UTF-8
+.\".br
+.\"o  o    bright          Tron B-Right/V R.4
+.br
+x  o    nyukan-utf-8 nyukan-utf-16 Nyukan-moji(Japanese nyukoku-kanrikyoku gaiji). Encoding is utf-8 and utf-16 respectively.
+.br
+o  x    arib-b24        ARIB B24 8-bit JIS-based
+.br
+o  x    arib-b24-sj     ARIB B24 8-bit SJIS-based
+.br
+o  x    transparent     Transparent mode (see below)
+.br
+o  x    guess		Reset assumed codeset (Pseude codeset)
+.\".br
+.\"o  x    nats-f          NATS for Finland/Sweden
+.\".br
+.\"o  x    nats-d          NATS for Denmark/Norway
+
+.SS "  Codeset explanations"
+.TP
+.B iso-8859-*
+.br
+When specified as output, G0 = GL is ascii and G1 = GR is iso-8859-*. 8bit encoding is used.
+.TP
+.B iso-2022-jp, jis
+.br
+Encoding is iso-2022-jp-2 (RFC1496). G0 = GL is JIS X 0201 roman,
+G1 = GR is JIS X 0201 kana,
+G2 is iso-8859-1 and G3 is JIS X 0212:1990 Supplementary Kanji.
+.TP
+.B jis-x0213, iso-2022-jp-3
+.br
+Encoding is iso-2022-jp-3 (JIS X 0213:2000 based). G0 = GL is JIS
+X 0201 roman, For output, G1 = GR is JIS X 0201 kana,
+G2 is iso-8859-1 and G3 is JIS X 0213 plane2 Kanji.
+.TP
+.B jis-x0213-strict
+.br
+Encoding is subset of iso-2022-jp-3-strict (uses Plane 1 only). For output, 
+G0 = GL is JIS X 0201 roman, G1 = GR is JIS X 0201 
+kana, G2 is iso-8859-1 and G3 is not set. Output code using JIS X 0208
+whenever possible. JIS X 0213 input is automatically recognized.  
+.TP
+.B jis-x0213-2004, iso-2022-jp-2004
+.br
+Encoding is iso-2022-jp-2003:2004. For output, G0 = GL is JIS X 0201 roman, 
+G1 = GR is JIS X 0201 kana,
+G2 is iso-8859-1 and G3 is JIS X 0213 plane2 Kanji.
+.TP
+.B oldjis
+.br
+Encoding is iso-2022-jp using old JIS X 0208:1978). 
+G0 = GL is JIS X 0201 roman, G1 = GR is JIS X 0201 kana,
+G2 is iso-8859-1 and G3 is JIS X 0212 Supplementary Kanji.
+.TP
+.B euc-jp, euc
+.br
+Encoding is 8-bit EUC using JIS X 0208:1997 character set.
+G0 = GL is ascii, G1 = GR is
+JIS X 0208, G2 is JIS X 0201 kana and G3 is JIS X 0212 Supplementary Kanji.
+.TP
+.B euc-x0213, euc-jis-2003
+.br
+Encoding is 8-bit EUC-based JIS X 0213:2000.
+G0 = GL is ascii, G1 = GR is X 0213:2000 plane 1,
+G2 is iso-8859-1 and G3 is JIS X 0213:2000 plane2 Kanji.
+.TP
+.B euc-jis-2004
+.br
+Encoding is 8-bit EUC-based JIS X0213:2004.
+G0 = GL is ascii, G1 = GR is X0213:2004 plane 1,
+G2 is iso-8859-1 and G3 is JIS x0213:2004 plane2 Kanji.
+.TP
+.B euc-kr
+.br
+Encoding is 8-bit EUC using KS X 1001 Wansung character set.
+G0 = GR is KS X1003, G1 = GR is KS X1001, G2 and G3 is not set.
+.TP
+.B euc7-kr iso-2022-kr
+Encoding is iso-2022-kr (rfc1557): 7-bit EUC using KS X 1001 Wansung
+character set.
+G0 = GR is KS X1003, G1 is KS X1001, G2 and G3 is not set.
+.TP
+.B euc-cn 
+.br
+Encoding is 8-bit EUC using GB 2312 simplified chinese character set.
+G0 = GR is ASCII, G1 = GR is GB2312, G2 and G3 is not set.
+.TP
+.B euc7-cn
+.br
+Encoding is 7-bit EUC using GB 2312 simplified chinese character set.
+G0 = GR is ASCII, G1 is GB2312, G2 and G3 is not set.
+.TP
+.B hz
+.br
+Encoding is HZ encoded (rfc1842) GB 2312 simplified chinese character set.
+G0 = GR is ASCII, G1 = GR is GB2312, G2 and G3 is not set.
+.\".TP
+.\".B zw
+.\"Encoding is zW encoded GB 2312 simplified chinese character set.
+.\"G0 = GR is ASCII, G1 = GR is GB2312, G2 and G3 is not set.
+.TP
+.B euc-tw
+.br
+Encoding is EUC encoded CNS11643 Plane1/2 traditional chinese character set. Subset of iso-2022-cn.
+G0 = GR is ASCII, G1 = GR is CNS11643 plane 1, G2 is CNS11643 plane 2
+and G3 is not set.
+.TP
+.B gb12345
+.br
+Encoding is 8-bit EUC using GB 12345 (GBF) traditional chinese character set.
+G0 = GR is ASCII, G1 = GR is GB12345, G2 and G3 is not set.
+.TP
+.B gbk, cp936
+.br
+Encoding is GBK simplified chinese character set.
+G0 = GR is ASCII and G1 = GR is GBK. G2 and G3 is not set.
+.TP
+.B gb18030 (experimental)
+.br
+Encoding is GB18030 (ibm-1392, Windows cp54936) chinese character set.
+Uses ASCII as latin part.
+.TP
+.B big5
+.br
+Encoding is Big5 traditional chinese character set with ETen extension.
+Include Euro mapping.  Uses ASCII as latin part.
+.\".TP
+.\".B big5-hku
+.\"Encoding is Big5 with HKU extension.
+.\"Uses ascii as latin part.
+.TP
+.B cp950
+.br
+Encoding is Microsoft cp950-Big5 traditional chinese character set.
+Uses ASCII as latin part.
+.TP
+.B big5-hkscs (experimental)
+.br
+Encoding is cp950-Big5 traditional chinese character set with HKSCS extension.
+Uses ASCII as latin part.
+.TP
+.B big5-2003 (experimental)
+.br
+Encoding is Big5-2003 Taiwanese standard traditional chinese character set.
+Uses ASCII as latin part.
+.TP
+.B big5-uao (experimental)
+.br
+Encoding is Big5-UAO (http://uao.cpatch.org) traditional chinese character set.
+Uses ASCII as latin part.
+.TP
+.B VISCII (experimental)
+.br
+Vietnamise VISCII (rfc1456) character set. Not TCVN-5712.
+.TP
+.B VIQR (experimental)
+.br
+Vietnamise VISCII character set with VIQR encoding(rfc1456).
+.TP
+.B sjis
+.br
+Encoding is Shift-encoded JIS X 0208:1997 character set.
+Note that this is not cp932. Uses JIS X 0201 latin as latin(GL) part.
+.TP
+.B sjis-x0213, shift_jis-2000
+.br
+Encoding is Shift-encoded JIS using JIS X 0213:2000 character set.
+.TP
+.B sjis-x0213-2004, shift_jis-2004
+.br
+Encoding is Shift-encoded JIS using JIS X 0213:2004 character set.
+10 newly defined character added, but Unicode mapping is same as
+JIS X 0213:2000. Uses JIS X 0201 latin as latin(GL) part.
+.TP
+.B sjis-cellular (experimental)
+.br
+Encoding is Shift-encoded JIS X 0208:1997 character set with
+NTT Docomo/Vodafone(SoftBank) cellular phone glyph mapping.
+Output is not supported.
+.TP
+.B cp932\ cp932w
+.br
+Encoding is Microsoft SJIS cp932 with NEC/IBM gaiji area, based on
+Windows XP mapping. Uses ASCII as latin(GL) part.
+\-\-use\-compat and \-\-use\-ms\-compat is automatically enabled.
+cp932w provides further WideCharToMultiByte compatibility.
+.TP
+.B cp51932
+.br
+Encoding is Microsoft EUC-based cp51932 with NEC/IBM gaiji area, based on
+Windows XP mapping.  Uses ASCII as G0 and JIS X 0201 kana as EUC G2 part.
+G3 is not used for output, and JIS X 0212:2000 as input.
+\-\-use\-compat and \-\-use\-ms\-compat is automatically enabled.
+.TP
+.B cp50220, cp50221, cp50222
+.br
+Encoding is Microsoft JIS-based cp50220, cp50221, cp50222 with NEC/IBM gaiji 
+area, based on Windows XP mapping.  
+For input, skf accepts cp50220, 50221 and 50222.
+Note that this codeset is NOT compatible with iso-2022.
+Uses ASCII as default character set.
+\-\-use\-compat and \-\-use\-ms\-compat is automatically enabled.
+.\".TP
+.\".B cp943
+.\".br
+.\"Encoding is IBM cp943 (OS/2 code) Shift-encode character set.
+.\"Uses JIS X 0201 latin as latin(GL) part.
+.TP
+.B oldsjis
+.br
+Encoding is Microsoft SJIS (JIS X 0208:1978 a.k.a. old JIS). 
+Uses JIS X 0201 latin as latin(GL) part.
+.TP
+.B johab
+.br
+Encoding is KS X1001(Johab) character set. Uses KS X1003 latin as latin(GL) part.
+.TP
+.B uhc
+.br
+Encoding is UHC (cp949) character set. Uses ASCII as latin(GL) part.
+.TP
+.B unicode, unicodefffe, utf16, utf16le
+.br
+Encoding is Unicode UTF-16 (v9.0). Input/Output default byte-endian is 
+little for unicode and big for unicodefffe, and input byte order mark 
+is recognized. utf16 and unicodefffe is big-endian. utf16le and unicode
+is little endian.
+Output includes endian mark by default unless \-\-disable\-endian\-mark
+is specified. Output range is within UTF-32 with surrogate pair unless
+\-\-limit\-to\-ucs2 is specified.
+.br
+Note that ucs2 is not supported within lightweight language extension in both in
+and output, because of SWIG's passing data structure limitation. Specify to ucs2 will
+generate error.
+.TP
+.B utf8
+.br
+Encoding is UTF-8 encoded Unicode (v9.0). Output doesn't include
+byte order mark unless \-\-enable\-endian\-mark is specified.
+Output range is within UTF-32 unless \-\-limit\-to\-ucs2 is specified.
+By default, CESU-8 is not accepted as input. Option \-\-enable\-cesu8
+enables CESU-8 input for utf-8 converter. CESU-8 output is not 
+supported.  For UTF-8, endian mark (BOM) is always ignored.
+.TP
+.B utf7
+.br
+Encoding is UTF-7 encoded Unicode (v9.0). Input/output range is
+limited to UTF-16, and value above U+10000 is regarded as undefined.
+BOM is always ignored for input, and never used for output.
+.TP
+.B keis (experimental)
+.br
+Encoding is Hitachi KEIS83/90. Output range is limited to EBCDIK and
+JIS X 0208 area.
+.TP
+.B jef (experimental)
+.br
+Encoding is Fujitsu JEF. Input only. Only basic part is supported.
+.TP
+.B ibm930 (experimental)
+.br
+Encoding is IBM DBCS Japanese with EBCDIC Kana
+.TP
+.B ibm931 (experimental)
+.br
+Encoding is IBM DBCS Japanese with EBCDIC latin (ibm037)
+.TP
+.B ibm933 (experimental)
+.br
+Encoding is IBM DBCS Korian with EBCDIC Wansung character set
+.TP
+.B ibm935 (experimental)
+.br
+Encoding is IBM DBCS Simplified Chinese with EBCDIC Chinese
+.TP
+.B ibm937 (experimental)
+.br
+Encoding is IBM DBCS Traditional Chinese with EBCDIC Chinese
+.TP
+.B koi8r
+.br
+Russian KOI-8R code.
+.TP
+.B cp1250
+.br
+Central Europian latin Microsoft cp1250 code
+.TP
+.B cp1251
+.br
+Eastern Europian cyrillic Microsoft cp1251 code
+.TP
+.B arib-b24 arib-b24-sj
+.br
+ARIB B24 code defined in ATIB-STD-B24 vol.1 part.2 chapt. 7.3.
+b24 is 8-bit jis based, and b24-sj is sjis based.
+.\".TP
+.\".B nats-f
+.\".br
+.\"NATS codeset for Finland/Sweden. 'SS' character shift is enabled.
+.\".TP
+.\".B nats-d
+.\".br
+.\"NATS codeset for Denmark/Norway. 'SS' character shift is enabled.
+.\".TP
+.\".B bright (experimental)
+.\"Encoding is B-Right/V R4. Only Japanese code is supported as output.
+.TP
+.B nyukan\-utf\-8\ nyukan\-utf\-16
+Normalized Unicode UTF-8/UTF-16 based on Japanese law ministry
+kokuji No. 582.
+.TP
+.B transparent
+.br
+Transparent mode. Various code control features, include folding and
+line end code conversion, is also ignored.
+
+.SS "  Shortcuts"
+.TP
+.B \-j 
+same as \-\-oc=jis 
+.TP
+.B \-s
+same as \-\-oc=sjis
+.TP
+.B \-e 
+same as \-\-oc=euc-jp 
+.TP
+.B \-q 
+same as \-\-oc=unicode
+.TP
+.B \-z 
+same as \-\-oc=sjis 
+.\".TP
+.\".B \-y 
+.\"same as \-\-oc=utf7
+.TP
+.B \-E
+same as \-\-ic=euc-jp. Assume input codeset is EUC-JP.
+.TP
+.B \-J
+same as \-\-ic=jis. Assume input codeset is iso-2022-jp.
+.TP
+.B \-S
+same as \-\-ic=sjis. Assume input codeset is shift JIS
+.TP
+.B \-Q
+same as \-\-ic=utf-16 \-\-input\-little\-endian. 
+.\".TP
+.\".B \-Y
+.\"same as \-\-ic=utf7. 
+.TP
+.B \-Z
+same as \-\-ic=utf8. 
+
+.SS "  ISO-2022 Specific controls"
+Replaces G0-3 after setting up according to specified input codeset
+by assigned character set with this option. Note that this doesn't change
+any codeset properties of the original codeset, like language and encoding.
+.TP
+.BI \-\-set\-g0=`charset\ name'
+Predefines specified code set to plane 0 (G0). Also set to GL at initial state.
+.TP
+.BI \-\-set\-g1=`charset\ name'
+Predefines specified code set to right plane (G1). Also set to GR at initial state.
+.TP
+.BI \-\-set\-g2=`charset\ name'
+Predefines specified code set to right plane (G2).
+.TP
+.BI \-\-set\-g3=`charset\ name'
+Predefines specified code set to right plane (G3).
+
+.PP
+Supported `char_set' is as follows. 'o' means the codeset can be specified 
+to set to the plane. 'x' means you can't. For unicode family codesets,
+this option is ignored. For other non-iso2022 categories, this option
+is not supported, and result is unpredictable.
+
+.PP
+g0 g1 g2 g3	codeset name	description
+.br
+o  o  o  o	ascii          ANSI X3.4 ASCII
+.br
+o  o  o  o	x0201          JIS X 0201 (latin part)
+.br
+x  o  o  o	iso8859-1      ISO 8859-1 latin
+.br
+x  o  o  o	iso8859-2      ISO 8859-2 latin
+.br
+x  o  o  o	iso8859-3      ISO 8859-3 latin
+.br
+x  o  o  o	iso8859-4      ISO 8859-4 latin
+.br
+x  o  o  o	iso8859-5      ISO 8859-5 Cyrillic
+.br
+x  o  o  o	iso8859-6      ISO 8859-6 Arabic
+.br
+x  o  o  o	iso8859-7      ISO 8859-7 Greek-latin
+.br
+x  o  o  o	iso8859-8      ISO 8859-8 Hebrew
+.br
+x  o  o  o	iso8859-9      ISO 8859-9 latin
+.br
+x  o  o  o	iso8859-10     ISO 8859-10 latin
+.br
+x  o  o  o	iso8859-11     ISO 8859-11 Thai
+.br
+x  o  o  o	iso8859-13     ISO 8859-13 latin
+.br
+x  o  o  o	iso8859-14     ISO 8859-14 latin
+.br
+x  o  o  o	iso8859-15     ISO 8859-15 latin
+.br
+x  o  o  o	iso8859-16     ISO 8859-16 latin
+.br
+x  o  o  o	tcvn5712       TCVN 5712 (Vietnamese)
+.br
+x  o  o  o	ecma94         ECMA 94 Cyrillic (KOI-8e)
+.br
+o  o  o  o	x0212          JIS X 0212:1990
+.br
+o  o  o  o	x0208          JIS X 0208:1997 
+.br
+o  o  o  o	x0213          JIS X 0213 Plane 1:2000
+.br
+o  o  o  o	x0213-2        JIS X 0213 Plane 2:2000 
+.br
+o  o  o  o	x0213n         JIS X 0213 Plane 1:2004
+.br
+o  o  o  o	gb2312         Simplified Chinese GB2312
+.br
+o  o  o  o	gb1988         Chinese GB1988(latin)
+.br
+o  o  o  o	gb12345        Traditional Chinese GB12345
+.br
+o  o  o  o	ksx1003        Korian KS X 1003(latin)
+.br
+o  o  o  o	ksx1001        Korian KS X 1001
+.br
+x  o  o  o	koi8-r         Cyrillic KOI-8R
+.br
+x  o  o  o	koi8-u         Ukrainean Cyrillic KOI-8U
+.br
+o  o  o  o	cns11643-1   Traditional Chinese CNS11643-1
+.br
+x  o  o  o	viscii-r       RFC1496 VISCII (right plane)
+.br
+o  o  o  o	viscii-l       RFC1496 VISCII (left plane)
+.br
+x  o  o  o	cp437          Microsoft cp437 (US latin)
+.br
+x  o  o  o	cp737          Microsoft cp737
+.br
+x  o  o  o	cp775          Microsoft cp775
+.br
+x  o  o  o	cp850          Microsoft cp850
+.br
+x  o  o  o	cp852          Microsoft cp852
+.br
+x  o  o  o	cp855          Microsoft cp855
+.br
+x  o  o  o	cp857          Microsoft cp857
+.br
+x  o  o  o	cp860          Microsoft cp860
+.br
+x  o  o  o	cp861          Microsoft cp861
+.br
+x  o  o  o	cp862          Microsoft cp862
+.br
+x  o  o  o	cp863          Microsoft cp863
+.br
+x  o  o  o	cp864          Microsoft cp864
+.br
+x  o  o  o	cp865          Microsoft cp865
+.br
+x  o  o  o	cp866          Microsoft cp866
+.br
+x  o  o  o	cp869          Microsoft cp869
+.br
+x  o  o  o	cp874          Microsoft cp874
+.br
+x  o  o  o	cp932          Microsoft cp932 (Japanese)
+.br
+x  o  o  o	cp1250     Microsoft cp1250(Central Europe)
+.br
+x  o  o  o	cp1251         Microsoft cp1251 (Cyrillic)
+.br
+x  o  o  o	cp1252         Microsoft cp1252 (Latin-1)
+.br
+x  o  o  o	cp1253         Microsoft cp1253 (Greek)
+.br
+x  o  o  o	cp1254         Microsoft cp1254 (Turkish)
+.br
+x  o  o  o	cp1255         Microsoft cp1255
+.br
+x  o  o  o	cp1256         Microsoft cp1256
+.br
+x  o  o  o	cp1257         Microsoft cp1257
+.br
+x  o  o  o	cp1258         Microsoft cp1258
+.TP
+.BI \-\-euc\-protect\-g1
+In EUC input mode, suppress sequences to set a charset to G1. Such
+sequences are discarded.
+.TP
+.BI \-\-add\-annon
+Add announcer for JIS X 0208:1997 to X 0208 designate sequence. This option
+works only with iso-2022-based output.
+.\".TP
+.\".BI \-\-disable\-jis90
+.\"Disable 2 added characters of JIS X 0208:1997. If this option is
+.\"specified, these two characters are replaced by Kanji variants.
+.\"This option is off by default.
+.TP
+.BI \-\-input\-detect\-jis78
+Distinguish JIS X 0208:1978 codeset and JIS X 0208:1997 codeset. 
+By default, these two charsets are regarded as X 0208:1997. This
+option is valid only when input encoding is JIS (iso-2022-jp).
+
+.SS "  JIS X 0212(Supplement Kanji code) Support"
+.TP
+.BI \-\-x0212\-enable
+.B skf
+by default does not output JIS X 0212 code in JIS/EUC mode. This option
+enables use of JIS X 0212 part. 
+Non-Japanese code, Shift_JIS variants, Unicode or KEIS output ignore
+this option.
+Note that this option is supported for backward compatibility. 
+It may not be supported in future versions.
+
+.SS "  Unicode coding specific control options"
+.TP
+.B skf\-2.10
+is based on Unicode 9.0.0 specification.
+.TP
+.BI \-\-use\-compat\ \-\-suppress\-compat
+.B By \-\-suppress\-compat, skf
+substitutes characters in unicode compatibility planes (U+F900 - U+FFFD)
+to appropriate characters in non-compatibility planes. If this
+substitution is enabled, these characters is converted to variants
+or undefined. 
+By \-\-use\-compat, skf outputs character in this area as it is.
+Default is \-\-use\-compat.
+Several codesets controls this as codeset feature (i.e. Use compatibility
+planes). See codeset section.
+.TP
+.BI \-\-use\-ms\-compat
+When output is Unicode, make Unicode map to be Microsoft windows
+compatible). This only changes conversion for some symbols in 
+JIS-Kanji, and adding --use-compat option is recommended for 
+roundtrip conversion. If you need more strict compatibility, try
+cp932w for input codeset.
+.TP
+.BI \-\-use\-cde\-compat
+When output is Unicode, make translation CDE standard codeset compatible.
+.TP
+.BI \-\-little\-endian
+When output is UTF-16le/be, use little endian byte-order.
+.TP
+.BI \-\-big\-endian
+When output is UTF-16le/be, use big endian byte-order.
+.TP
+.BI \-\-disable\-endian\-mark\ \-\-enable\-endian\-mark 
+When output is UTF-16 or UTF-8, do not use/use byte order marking. To make UTF-16N, use
+this option with \-\-little\-endian. By default, BOM is enabled for UTF-16 and disabled for UTF-8.
+.TP
+.BI \-\-input\-little\-endian
+When input is UTF-16le/be, assume input is little endian byte-ordered.
+.TP
+.BI \-\-input\-big\-endian
+When input is UTF-16le/be, assume input is big endian byte-ordered.
+.TP
+.BI \-\-endian\-protect
+Do not use endian mark in input stream. Endian mark is just discarded.
+This is off by default.
+.TP
+.BI \-\-limit\-to\-ucs2
+Do not use > 0x10000 area code in Unicode (i.e. limits code to BMP area).
+This option doesn't limit internal code range in skf. This is off by default.
+.TP
+.BI \-\-disable\-cjk\-extension
+Treat CJK extension A/B areas as undefined. This is off (i.e. these areas are enabled) by default.
+.TP
+.BI \-\-enable\-cesu8
+Enable CESU-8 input in utf-8 codeset. Ignored for any other codesets.
+.TP
+.BI \-\-non\-strict\-utf8
+Enable broken (decodable but not obeying specs.) utf-8 input. If you need
+this option, proceeds with extra care.
+.TP
+.BI \-\-enable-nfd-decomposition\ \-\-disable-nfd-decomposition
+Enable/Disable Unicode Normalized decomposition. Default is disabled.
+.TP
+.BI \-\-enable-nfda-decomposition\ \-\-disable-nfda-decomposition
+Enable/Disable Apple-compatible Unicode Normalized decomposition.
+Default is disabled.
+.TP
+.BI \-\-oldcell\-to\-emoticon
+Convert old cell-phone gaiji area to emoticon. Supported: 
+NTT Docomo/AU emoticons. A reverse mapping is not supported.
+
+.\".SS "  Codeset/Vendor Specific codeset handling flags"
+.\".B skf
+.\"by default assumes machine specific parts of kanji code are Microsoft
+.\"Windows compatible. Here are some options that control this behavior.
+.\"Option in this category is valid when output codeset is Japanese codeset,
+.\"except \-\-disable\-charts.
+.\".TP
+.\".BI \-\-disable\-gaiji\-support
+.\"Assume OS/machine specific part is undefined. Only codepoint defined
+.\"in specified codeset is used.
+.\".TP
+.\".BI \-\-disable\-chart
+.\"Do not use Moji-keisen characters. This is for old Macintosh system
+.\"(System 6.x or older) compatibility.
+
+.SS "  Miscellanious codeset related options"
+.TP
+.BI \-\-old\-nec\-compat
+Enable old NEC kanji sequence (ESC-K,H). Needs compile
+option --enable-oldnec at configuration.
+.TP
+.B \-\-no\-utf7
+Assume input codeset is *NOT* UTF-7 encoded Unicode.
+This option disables input utf7 testing.
+.TP
+.B \-\-no\-kana
+Assume input codeset does *NOT* include JIS X 0201 kana. 
+.TP
+.B \-\-input\-limit\-to\-jp
+Tell detection mechanism that input is some kind of Japanese codeset.
+
+.SS "OUTPUT Conversions options"
+.PP
+.B skf
+is intended to output stream to stdout, buf nkf-compatible file-encoding
+change option is also provided.
+.TP
+.B \-\-overwrite \-\-in\-place
+converts encoding of file(s) specified as input. \-\-overwrite preserves
+file change date.
+.br
+.PP
+.B skf
+has various features to fix output files appropriate in local environment.
+Most of these are controlled by extended control switches described
+in this section.
+.TP
+.B \-\-use\-g0\-ascii
+set G0(=GL) for output encoding to ASCII, ignoring codeset designation.
+.SS "  X\-0201 Kana/latin conversions"
+.B skf
+by default converts X\-0201 kanas to X\-0208 kanas. To output X\-0201 kana as
+it is, use one of following options. When output is designated to
+EUC or SJIS, these three options enable X\-0201 kana output by ways
+provided by each encoding. When Unicode output is specified, (equiv.) kana
+part output is controlled by \-\-use\-compat, not following switches.
+Valid only when output codeset is NOT Unicode family.
+.TP
+.BI \-\-kana\-jis7
+use SI/SO locking shift sequence to designate X\-0201 kana.
+This switch is valid for jis, jis-x0213 and cp50220 (i.e. cp50221) encoding. 
+For other codesets, this option is ignored.
+.TP
+.BI \-\-kana\-jis8
+output X\-0201 kana using 8-bit code right plane.
+This switch is valid for jis and jis-x0213 encoding. 
+For other codeset, this option is ignored.
+.TP
+.BI \-\-kana\-esci\ \-\-kana\-call
+use ESC\-(\-I to designate X\-0201 kana.
+This switch is valid for jis, jis-x0213 and cp50220 (i.e. cp50222) encoding. 
+For other codeset, this option is ignored.
+.TP
+.BI \-\-kana\-enable
+If output is EUC-JP or cp51932, use X\-0201 kana with G2.  
+If SJIS output, it is same as \-\-kana\-jis8.
+When JIS output, it is same as \-\-kana\-call.
+.TP
+.BI \-\-use\-iso8859\-1
+Enable iso-8859-1 output. Iso-8859-1 is invoked to G1 and set to GR
+plane. 
+.\".TP
+.\".BI \-\-use\-iso8859\-1\-left
+.\"Enable 7-bit iso-8859-1 output. Iso-8859-1 is invoked to G0
+.\"plane. 
+
+.SS "  URI/TeX format conversion feature options"
+With Unicode(tm) family output codings,
+.B skf
+output non-ascii latin character part as it is, but with other 
+output codings,
+.B skf
+converts these characters using following rules:
+.PP
+(1) If a code is defined in a specified output codeset,
+specified code point is used for output.
+.br
+(2) If one of following html convert modes are enabled 
+(i.e. \-\-convert\-html\ \-\-convert\-sgml) and the code is 
+defined in html/sgml codeset, it is converted to entity-reference or
+codepoint reference.
+.br
+(3) If tex convert mode enabled and the code is defined in tex expression,
+it is converted to tex format.
+.br
+(4) If the code is a kind of combined ligatures, it is shown by
+a set of characters.
+.br
+(5) A kind of replacement character is shown, with warning.
+.TP
+.BI \-\-convert\-html\ \-\-convert\-sgml
+Enable html convert mode. This mode is cleared by \-\-reset. These two options are synonyms, and are treated as same option.
+.TP
+.BI \-\-convert\-html\-decimal
+Enable html code-point decimal convert mode. This mode is cleared by \-\-reset.
+.TP
+.BI \-\-convert\-html\-hexadecimal
+Enable html code-point hexadecimal convert mode. This mode is cleared by \-\-reset.
+.TP
+.BI \-\-convert\-tex
+Enable TeX convert mode. This mode is cleared by \-\-reset.
+.TP
+.BI \-\-use\-replace\-char
+In Unicode, use unicode replacement chatacter (U+fffc) for undefined
+chatacter.
+
+.SH " Extended Options"
+.SS "Encoding/Decoding control options"
+.TP
+.BI \-\-decode=`encoding\ scheme'
+.BI \-\-encode=`encoding\ scheme'
+Specify an decoding/encoding scheme for input stream. 
+Supported encoding schemes for decoding are
+`hex', 'mime', 'mime_q', 'mime_b', 'uri', 'ace', 'hex_perc_encode',
+'base64', 'qencode', 'rfc2231', `rot' and none. Each option means
+CAP hex-code, mime, mime Q-encoding, mime B-encoding, uri character 
+reference, ACE punycode, uri percent notation, base64, Q-encoding,
+rfc2231 and rot13/47 respectively. 'none' means no decode.
+.br
+For encoding, 'hex', 'mime_b', 'mime_q', 'uri', 'ace', 'cap', 
+'hex_perc_encode', 'base64' and 'none' are supported. EBCDIC related codesets
+and some already ascii-encoded codeset (e.g. UTF-7) output with
+encoding is not supported.
+.br
+Only one decode/encode option is valid, and if more than one option 
+is specified, the last one is used.
+When one of mime decodings is specified, base text is assumed
+to be EUC encoding unless specified otherwise. Except rot, which assumes
+input stream is Shift_JIS, EUC or iso-2022-jp, these encodings assumes
+input stream is ascii (as defined in RFC2045). Some encodings may
+co-exist with encoding, but this is not guaranteed. Especially, if input
+is UTF-16/UCS2 code, these encoding is ignored in skf.
+.TP
+.BI \-\-mime\-ms\-compat
+treat japanese generic codesets as Microsoft cp932 compatible. More
+specifically, with this option skf treats iso-2022-jp as cp50220,
+euc-jp as cp51932 and Shift_JIS as cp932w.
+.BI \-\-mime\-persistent
+skf detects address-like strings and excludes them from mime encoding.
+This option disables such behavior. Default in nkf-compatible mode.
+
+.SS "Shortcut"
+.B \-m
+same as \-\-decode=mime
+.B \-mB
+same as \-\-decode=mime_b
+.B \-mQ
+same as \-\-decode=mime_q
+.B \-m0
+same as \-\-decode=none
+.B \-M
+same as \-\-encode=mime_b
+.B \-MB
+same as \-\-encode=base64
+.B \-MQ
+same as \-\-encode=mime_q
+.br
+.SS "End of line control options"
+.TP
+.BI \-\-lineend\-thru
+Output end-of-line code as it is. Also output ^Z code as it is\.
+This is default.
+.TP
+.BI \-\-lineend\-cr\ \-\-lineend\-mac \-Lm
+Use CR as end-of-line code. Also delete ^Z code from input stream.
+.TP
+.BI \-\-lineend\-lf\ \-\-lineend\-unix \-Lu
+Use LF as end-of-line code. Also delete ^Z code from input stream.
+.TP
+.BI \-\-lineend\-crlf\ \-\-lineend\-windows \-Lw
+Use CR+LF as end-of-line code. Also delete ^Z code from input stream.
+This option doesn't preserve original order of cr and lf.
+.TP
+.BI \-\-input\-cr
+Assume input stream uses CR as end-of-line code.
+.TP
+.BI \-\-input\-lf
+Assume input stream uses LF as end-of-line code.
+.TP
+.BI \-\-input\-crlf
+Assume input stream uses CR+LF as end-of-line code.
+.TP
+.B \-F[line_length[\-kinsoku]]
+.TP
+.B \-f[line_length[\-kinsoku]] \-f[line_length[\+kinsoku]]
+Wrap input lines by line_length columns. f option deletes CR/LF's in input,
+and F option doesn't delete them. For Japanese convension, both
+gyoutou-kinsoku(by burasage-gumi) and gyoumatsu-kinsoku(by oidasi-gumi) is
+supported. The burasage-length is controlled by kinsoku option. Default value
+for line_length is 66, and must be < 1000. Default value for kinsoku is
+5, and must be <= 10. In 'f' option, skf autodetects paragraph and retains
+some CR/LF. 2nd 'f' option format (with '+') disables this behaviour.
+In nkf compatible mode, some fold behaviors change as follows.
+.br
+(1) Default line_length is set to 60, and kinsoku value is 10.
+.br
+(2) alpha numeric characters become gyoutou-kinsoku characters.
+.SS "File control options"
+.TP
+.BI \-\-filewise\-detect\ \-\-force\-reset
+Reset and re-detect input code set at the start of each file.
+.TP
+.BI \-\-linewise\-detect
+Reset and re-detect input code set at the start of each line.
+
+.SS "Compatibility options"
+.TP
+.BI \-\-nkf\-compat
+interpret following options as nkf compatible manners.
+\-l, \-d, \-c, \-x, \-X, \-w and \-W works as nkf2.x
+\-f and \-F behavior is changed as shown above. 
+Most of other nkf options and switches also work like nkf, except
+in case of error.
+.TP
+.BI \-\-skf\-compat
+interpret following options as skf-native manners.
+.TP
+.BI \-r
+nkf\-compatible rot. Works only with --nkf-compat mode. Allowed
+input encodings are limited to JIS/Shift_JIS/EUC.
+.TP
+.BI \-h[123] \-\-hiragana \-\-katakana \-\-katakana\-hiragana
+\-h, \-h1 and \-\-hiragana converts all kanas to hiragana.
+\-h2 and \-\-katakana convert all kanas to katakana.
+\-h3 and \-\-katakana\-hiragana swap katakana and hiragana.
+.TP
+.BI \-\-nkf\-help
+show option difference/compatibility between skf and nkf.
+
+
+.SS "Lightweight language specific options"
+.B skf
+plugin for lightweight language has subset of options. More specifically,
+file input/output related options(-b, -u, --overwrite --in-place,
+--filewise-detect --linewise-detect --show-filename --suppress-filename)
+and UTF-16 output is disabled(except ruby or python3) are not supported.
+
+.SS "  Ruby-1.9.x/2.x specific options"
+Since ruby 1.9, ruby uses CCS string handling. skf returns output string
+with specified codeset. Following options override this behavior.
+.br
+.TP
+.BI \-\-rb\-out\-ascii8bit
+returns string with ascii-8bit encoding.
+.TP
+.BI \-\-rb\-out\-string
+returns string with specified encoding.
+.br
+.SS "  Python-3.x specific options"
+Since native codeset representation in python3.x is UCS2/UCS4, skf behaves
+differently with output codeset option. If output codeset is UTF-16 or 
+UTF-32(in wide mode), skf returns Unicode object, and for all other codesets
+skf returns binary array object. Following options change these behaviors.
+.br
+.TP
+.BI \-\-py\-out\-binary
+use binary array object on UTF-16/32 output. BOM is enabled.
+.TP
+.BI \-\-py\-out\-string
+use psuede unicode binary stream to output.
+.br
+skf accepts either a binary array or an unicode object for input.
+
+.SS "Misc. Control options"
+.TP
+.BI \-\-disable\-space\-convert\ \-\-enable\-space\-convert
+.B skf
+converts an ideographic space into two ascii spaces. 
+Disable option disables, and enable option enables this behavior.
+Default is disabled.
+.TP
+.BI \-\-html\-sanitize
+Convert several characters in HTML document to entity reference
+expression. Specifically, "!#$&%()/<>:;?\' are escaped by entity-references.
+.TP
+.B \-\-filewise\-detect\ \-\-force\-reset
+If multiple input files are given, detect input codeset for each file.
+.TP
+.B \-\-linewise\-detect
+Detect input code line-wise. Note this option weakens code detect correctness.
+.TP
+.BI \-\-reset
+Reset all flags specified by extended controls and given input code.
+.TP
+.BI \-\-inquiry\ \-\-guess
+.B skf
+detects code and output detect result to stdout. No 
+filtering output is performed. If multiple input file is given,
+\-\-show\-filename is automatically enabled.
+.TP
+.BI \-\-hard\-inquiry\ 
+Similar as inquiry, but reports both code and end-of-line character.
+.TP
+.BI \-\-suppress\-filename
+When inquiry(\-\-inquiry) is on, this option disables file name output.
+This option overrides \-\-show\-filename.
+.TP
+.BI \-\-show\-filename
+When inquiry(\-\-inquiry) is on, this option adds each file name to
+output. 
+.TP
+.BI \-\-invis\-strip
+Delete all escape sequences not belonging to ISO-2022 code extension. This is
+intended to replace invisstrip command bundled in inews package.
+.TP
+.B \-I
+Warn if input has unassigned code points.
+.TP
+.B \-v
+print version information and exit.
+.TP
+.B \-\-help
+print brief help and exit.
+.TP
+.B \-\-show\-supported\-codeset
+Display supported codesets (input) and exit. Both canonical names (left side)
+and detailed names are shown. This canonical name can be used as MIME charset
+and also as ic-option code specification.
+.TP
+.B \-\-show\-supported\-charset
+Display supported character sets (output) and exit. Both canonical names and
+detailed names are shown. Some charsets with special treatments (i.e. 
+meaningless as set-g* parameters) intensionally lacks addressable cnames.
+.\".TP
+.\".B \-%[debug_level]
+.\"Enable skf debugging. Debug level is one digit. 0 is the least verbose,
+.\"and with -%9 you'll get whole traces within skf.
+.\"This option needs configure option --enable-debug.
+
+.SH "FILES"
+.TP
+.B /usr/(local/)share/skf/lib/	(Unices)
+.TP
+.B /Program Files/skf/share/lib  (MS Windows)
+These directories are where external codeset conversion tables go.
+The location that current skf
+assumes are shown by -h option.
+
+.br
+.SH AUTHOR
+
+skf is written by Seiji Kaneko (efialtes@osdn.jp) based on
+idea from nkf written by Itaru Ichikawa (ichikawa@flab.fujitsu.co.jp)
+X 0213 code table is derived from work of earthian@tama.or.jp.
+Some codeset mapping is derived from various sources. Detailed
+origin is shown in copyright document included in this distribution.
+
+.SH ACKNOWLEDGEMENT
+skf is inspired by works or requests by
+shinoda@cs.titech, kato@cs.titech, uematsu@cs.titech, void@global
+ohta@ricoh, Hinata(HKE)\, Ashizawa(CRL)\, Kunimoto(SDL)\,
+Oohara(Univ of Kyoto), Jokagi(elf2000) and Naruse (at osdn.jp). Thanks.
+
+.SH BUGS AND LIMITATIONS
+1. skf can handle mixed coding with some limitations. However, code
+detection tends to fail for mixed code, and giving explicit input code set
+is strongly encouraged, if codeset is known beforehand.
+.br
+In case of need, \-\-linewise\-detect option may help, but code detecting will
+be more likely to fail.
+.PP
+2. skf implements ISO-2022 with following exceptions.
+.br
+ i) GL 0x20 is always space. Even when 96-character codeset is invoked to GL.
+.br
+ ii) Sequences for setting codes to C1 and C2 are always ignored.
+.br
+ iii) If unknown sequence is given to G0, G0 is set to ascii, and locking/single shift is cleared. Unknown sequece call to set to G1-G3 is just ignored. 
+ Private charset is also not supported and is ignored.
+.br
+ iv) Sequences for 96 character multibyte coding is ignored (Currently, no codeset is registered).
+.br
+ v) Calling UTF-8, UTF-16 coding system from iso-2022 is supported, and returns to previous coding system by standard return.
+ Callings and returns to/from other coding schemes are ignored.
+.br
+ vi) For supporting some of cellular phone glyphs, several private (not registered) codesets are defined in skf, and can be called by appropriate sequences.
+.PP
+3. Error output coding is controlled by LOCALE environment variables
+in UN*X system. skf doesn't take care of situations like stdout and
+stderr are redirecting into a same stream. Such case should be
+handled by user side.
+.PP
+4. skf converts KEIS/JIS X 0213 code using CJK-extension B area and
+CJK compatibility area. For this reason, X 0213 and KEIS convert result
+varies depending on \-\-use\-compat and \-\-limit\-to\-ucs2 switches.
+.PP
+5. JIS X 0207:1979 is not supported. JIS X 0211:1987 is designed
+to be supported (i.e. common terminal control sequence will be
+transparently passed to output).
+.PP
+6. Even if unbuffer option(-u) is specified, some code-translation
+related bufferings are still performed (in MIME, kana, VIQR etc.).
+.PP
+7. skf-1.9x or later recognizes and handles languages in iso639-1(alpha 2). 
+iso639-2 is not supported as a valid language set.
+.PP
+8. Unicode IVS is not supported. Sequences are just discarded.
+.PP
+9. skf-1.9x or later does not retain Macintosh RLO-ordered character property.
+Codesets with this kind of codes are not supported. 
+
+.SH Notes
+1. Extended options are changed extensively since skf-1.9. Some archaic
+options (eg. -B, -@ and -r) have been deleted from this version.
+.PP
+2. skf is originally forked project from nkf, but doesn't contain any
+nkf codes now.  Copyright notice is retained by honor.
+.PP
+3. From version 1.9, default Japanese character set assumed by skf 
+has changed to
+JIS X 0208:1990 with Microsoft Japanese Windows gaiji (i.e. CP932).
+.PP
+4. Code autodetection is not perfect by design. If it has failed to detect input code properly, please give input code information explicitly.
+.PP
+5. Some ligatures in Unicode, cp932 gaiji and KEIS83 are converted using JIS X 0124 and other convention.
+During this conversion, its byte length is not preserved.
+.PP
+6. skf is intended to pass ANSI compatible terminal control codes transparently, but this is not guaranteed.
+.PP
+7. nkf's -i and -o options works only in nkf-compat mode. It is obsolete
+option in 1.97, and valid only when iso-2022-jp and without 
+considering output codeset specifications.
+.PP
+8. For unconverted character, skf uses geta and undefined character as \-\-use\-replace\-char option.
+If output codeset doesn't contain geta code, skf prefers 'black square character', then uses '.' respectively.
+.PP
+9. There are some undocumented options. These options should be considered as highly experimental.
+.PP
+10. In lineend_thru mode and using folding, skf remembers order of cr and lf appears in stream, and use that order.
+For this design, if skf needs to output line-end character before any line-end
+character appears in input stream, input order may not be preserved.
+.PP
+11. NKF-compatibility
+.br
+1) \-\-prefix, some \-\-fb's and \-\-no\-best-fit-chars are not supported.
+.br
+2) MSDOS (and -T), --exec-in and --exec-out are not supported.
+.br
+3) MIME decoding/encoding handling behaviors differ in various ways.
+.br
+4) lineend conversion acts differently. Results may not be same for some messy text.
+.br
+5) -r option and \-\-decode=rot is different. See each option description.
+.br
+6) detected codeset name is not compatible with nkf. \-\-help and \-\-version return different results.
+.PP
+12. Conversion to NYUUKAN GAIJI is as follows
+.br
+1) Kanji codes in JIS X0208(1997), JIS X0212(1990), JIS X0213(2004/2012), 
+ Houmusho-kokuji No.582 beppyou No.1 are sent to output as it is.
+.br
+2) Kanji codes in beppyou No.4-2 leftmost columns are converted to the first
+ priority character in the table. If the second priority characters appear,
+ the codes are sent to output as it is.
+.br
+3) Other kanji codes are converted as undefined codes. See above conversion method.
+Non-kanji codes (latins, glyphs etc.) are sent to output as it is.
+.br
+.PP
+13. ARIB B24 compatibility
+.br
+1) Input only. ARIB B24 output is not supported.
+.br
+2) Neither international encoding nor X0213 extension are supported.
+.br
+3) Macro define sequences are suppressed. These sequences are recognized and
+ discarded.
+.br 
+4) Without specifying arib codeset, skf treats Arib-defined codepage as follows.
+.br
+  i) private codepage are supported. ascii/jis x-0201 0x5f is not modified.
+.br
+  ii) macro define/invoke and rpc invoke does not work. These characters are
+    discarded.
+.br
+.br
+
+.SH Notice
+Unicode(TM) is a trademark of Unicode, Inc. Microsoft and Windows are
+registered trademarks of Microsoft corporation. Macintosh is
+a registered trademark of Apple Inc. Vodafone is a
+trademark of Vodafone K.K. 
+Other names and terms may be trademarks or registered trademarks
+of their respective owner.
+Trademark symbol (TM) may be omitted in this manual page.
+
